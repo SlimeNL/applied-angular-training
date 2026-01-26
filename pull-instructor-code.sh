@@ -1,2 +1,2 @@
-npx gitpick -o HypertheoryTraining/angular-starter-2026 /c/Users/Student/class/instructor-code
+npx gitpick -o JeffryGonzalez/applied-angular-jan-2026/tree/master /c/Users/Student/class/instructor-code
 

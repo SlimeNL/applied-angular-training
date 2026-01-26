@@ -24,6 +24,11 @@ export const routes: Routes = [
       import('./areas/dev/demos-aa-landing/demos-aa.routes').then((r) => r.demosAaFeatureRoutes),
   },
   {
+    path: 'links',
+    loadChildren: () =>
+      import('./areas/links/feature-landing/landing.routes').then((r) => r.linksFeature),
+  },
+  {
     path: '**',
     redirectTo: 'home',
   },

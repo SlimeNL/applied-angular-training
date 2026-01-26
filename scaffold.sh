@@ -4,13 +4,19 @@
 areas_dir="src/app/areas"
 areas=()
 
-# Read directories into array
-while IFS= read -r dir; do
-    basename=$(basename "$dir")
-    if [ "$basename" != "shared" ]; then
-        areas+=("$basename")
+# Read directories into array (compatible with Git Bash on Windows)
+for dir in "$areas_dir"/*/ ; do
+    if [ -d "$dir" ]; then
+        basename=$(basename "$dir")
+        if [ "$basename" != "shared" ]; then
+            areas+=("$basename")
+        fi
     fi
-done < <(find "$areas_dir" -mindepth 1 -maxdepth 1 -type d | sort)
+done
+
+# Sort the areas array
+IFS=$'\n' areas=($(sort <<<"${areas[*]}"))
+unset IFS
 
 # Check if any areas were found
 if [ ${#areas[@]} -eq 0 ]; then
@@ -18,10 +24,17 @@ if [ ${#areas[@]} -eq 0 ]; then
     exit 1
 fi
 
-# Display menu of areas
+# Display menu of areas (compatible replacement for select)
 echo "Select an area:"
-select area in "${areas[@]}"; do
-    if [ -n "$area" ]; then
+for i in "${!areas[@]}"; do
+    echo "$((i+1))) ${areas[$i]}"
+done
+
+# Get user selection
+while true; do
+    read -p "Enter selection (1-${#areas[@]}): " selection
+    if [[ "$selection" =~ ^[0-9]+$ ]] && [ "$selection" -ge 1 ] && [ "$selection" -le "${#areas[@]}" ]; then
+        area="${areas[$((selection-1))]}"
         echo "Selected area: $area"
         break
     else
@@ -38,6 +51,39 @@ if [ -z "$feature_name" ]; then
     exit 1
 fi
 
-# Run the scaffold command
-echo "Running: npx simple-scaffold -n $feature_name -o src/app/areas/$area -t .templates/landing-feature"
-npx simple-scaffold -n "$feature_name" -o "src/app/areas/$area" -t .templates/landing-feature
+# Set up paths
+template_dir=".templates/landing-feature"
+output_dir="src/app/areas/$area"
+feature_dir="$output_dir/${feature_name}-landing"
+
+# Check if feature directory already exists
+if [ -d "$feature_dir" ]; then
+    echo "Error: Feature directory $feature_dir already exists"
+    exit 1
+fi
+
+echo "Creating feature: $feature_name in $output_dir"
+
+# Create directory structure
+mkdir -p "$feature_dir/internal/pages"
+
+# Process and copy files
+echo "Copying template files..."
+
+# Copy routes file
+routes_file="$feature_dir/${feature_name}.routes.ts"
+sed -e "s/{{name}}/$feature_name/g" -e "s/{{ name }}/$feature_name/g" "$template_dir/{{name}}-landing/{{name}}.routes.ts" > "$routes_file"
+echo "Created: $routes_file"
+
+# Copy home.ts (internal)
+home_file="$feature_dir/internal/home.ts"
+sed -e "s/{{name}}/$feature_name/g" -e "s/{{ name }}/$feature_name/g" "$template_dir/{{name}}-landing/internal/home.ts" > "$home_file"
+echo "Created: $home_file"
+
+# Copy pages/home.ts
+page_file="$feature_dir/internal/pages/home.ts"
+sed -e "s/{{name}}/$feature_name/g" -e "s/{{ name }}/$feature_name/g" "$template_dir/{{name}}-landing/internal/pages/home.ts" > "$page_file"
+echo "Created: $page_file"
+
+echo ""
+echo "Feature '$feature_name' scaffolded successfully in $feature_dir"
