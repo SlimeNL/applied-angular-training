@@ -64,7 +64,7 @@ import { PageLayout } from '@ht/shared/ui-common/layouts/page';
               </div>
               <div>
                 <a
-                  href="https://thisis.angular.dev"
+                  href="https://dev.to/this-is-angular"
                   target="_blank"
                   rel="noopener noreferrer"
                   class="link link-primary font-semibold"
@@ -72,6 +72,18 @@ import { PageLayout } from '@ht/shared/ui-common/layouts/page';
                 >
                 <p class="text-base-content/70 text-sm mt-1">
                   Curated showcase of Angular projects and resources.
+                </p>
+              </div>
+              <div>
+                <a
+                  href="https://www.angulararchitects.io/en/blog/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="link link-primary font-semibold"
+                  >Angular Architects</a
+                >
+                <p class="text-base-content/70 text-sm mt-1">
+                  German company, specializing in Angular consulting and training.
                 </p>
               </div>
               <div>

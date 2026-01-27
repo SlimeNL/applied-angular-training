@@ -1,5 +1,5 @@
 // For more info, see https://github.com/storybookjs/eslint-plugin-storybook#configuration-flat-config-format
-import storybook from "eslint-plugin-storybook";
+import storybook from 'eslint-plugin-storybook';
 
 import eslint from '@eslint/js';
 
@@ -8,64 +8,69 @@ import { defineConfig, globalIgnores } from 'eslint/config';
 import { configs as tseslint } from 'typescript-eslint';
 import sheriff from '@softarc/eslint-plugin-sheriff';
 
-export default defineConfig([globalIgnores([
-  '.angular/**',
-  '*/**/mockServiceWorker.js',
-  'dist/**',
-  'scripts/**',
-  'playwright.config.ts',
-  'system-tests/**',
-  '*/**/mockServiceWorker.js',
-  '*/**/__mocks__/**',
-]), {
-  files: ['**/*.html'],
-  plugins: {
-    '@softarc/sheriff': sheriff,
+export default defineConfig([
+  globalIgnores([
+    '.angular/**',
+    '*/**/mockServiceWorker.js',
+    'dist/**',
+    'scripts/**',
+    'playwright.config.ts',
+    'system-tests/**',
+    '*/**/mockServiceWorker.js',
+    '*/**/__mocks__/**',
+  ]),
+  {
+    files: ['**/*.html'],
+    plugins: {
+      '@softarc/sheriff': sheriff,
 
-    angular: angular.templatePlugin,
+      angular: angular.templatePlugin,
+    },
+    languageOptions: {
+      parser: angular.templateParser,
+    },
   },
-  languageOptions: {
-    parser: angular.templateParser,
-  },
-}, {
-  files: ['**/*.ts'],
-  extends: [
-    eslint.configs.recommended,
-    tseslint.strict,
-    angular.configs.tsRecommended,
-    sheriff.configs.all,
-  ],
-
-  processor: angular.processInlineTemplates,
-  rules: {
-    '@typescript-eslint/no-invalid-void-type': ['off'],
-
-    '@typescript-eslint/naming-convention': [
-      'error',
-      {
-        selector: 'variable',
-        modifiers: ['const'],
-        format: ['camelCase'],
-      },
-    ],
-    '@typescript-eslint/no-extraneous-class': 'off',
-    '@typescript-eslint/consistent-type-definitions': 'off',
-    '@angular-eslint/directive-selector': [
-      'off',
-      {
-        type: 'attribute',
-        prefix: 'app',
-        style: 'camelCase',
-      },
+  {
+    files: ['**/*.ts'],
+    extends: [
+      eslint.configs.recommended,
+      tseslint.strict,
+      angular.configs.tsRecommended,
+      sheriff.configs.all,
     ],
 
-    '@angular-eslint/component-selector': [
-      'off',
-      {
-        type: 'element',
-        prefix: 'app',
-        style: 'kebab-case',
-      },
-    ],
+    processor: angular.processInlineTemplates,
+    rules: {
+      '@typescript-eslint/no-invalid-void-type': ['off'],
+
+      '@typescript-eslint/naming-convention': [
+        'error',
+        {
+          selector: 'variable',
+          modifiers: ['const'],
+          format: ['camelCase'],
+        },
+      ],
+      '@typescript-eslint/no-extraneous-class': 'off',
+      '@typescript-eslint/consistent-type-definitions': 'off',
+      '@angular-eslint/directive-selector': [
+        'off',
+        {
+          type: 'attribute',
+          prefix: 'app',
+          style: 'camelCase',
+        },
+      ],
+
+      '@angular-eslint/component-selector': [
+        'off',
+        {
+          type: 'element',
+          prefix: 'app',
+          style: 'kebab-case',
+        },
+      ],
+    },
   },
-}, ...storybook.configs["flat/recommended"]]);
+  ...storybook.configs['flat/recommended'],
+]);

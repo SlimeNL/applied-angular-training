@@ -27,7 +27,6 @@
     content: ' *';
     @apply text-error;
   }
-
 }
 
 @plugin "@tailwindcss/forms";

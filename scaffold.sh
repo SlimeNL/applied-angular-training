@@ -64,26 +64,81 @@ fi
 
 echo "Creating feature: $feature_name in $output_dir"
 
-# Create directory structure
-mkdir -p "$feature_dir/internal/pages"
+# Discover and process all template files
+echo "Discovering template files..."
+template_files=$(find "$template_dir" -type f)
 
-# Process and copy files
-echo "Copying template files..."
+if [ -z "$template_files" ]; then
+    echo "Error: No template files found in $template_dir"
+    exit 1
+fi
 
-# Copy routes file
-routes_file="$feature_dir/${feature_name}.routes.ts"
-sed -e "s/{{name}}/$feature_name/g" -e "s/{{ name }}/$feature_name/g" "$template_dir/{{name}}-landing/{{name}}.routes.ts" > "$routes_file"
-echo "Created: $routes_file"
+echo "Processing template files..."
 
-# Copy home.ts (internal)
-home_file="$feature_dir/internal/home.ts"
-sed -e "s/{{name}}/$feature_name/g" -e "s/{{ name }}/$feature_name/g" "$template_dir/{{name}}-landing/internal/home.ts" > "$home_file"
-echo "Created: $home_file"
+# Process each template file
+while IFS= read -r template_file; do
+    # Calculate relative path from template directory
+    relative_path="${template_file#$template_dir/}"
+    
+    # Replace {{name}} with feature_name in the path
+    output_path="$feature_dir/${relative_path//\{\{name\}\}/$feature_name}"
+    
+    # Create parent directory if needed
+    output_parent=$(dirname "$output_path")
+    mkdir -p "$output_parent"
+    
+    # Process file content and write to output
+    sed -e "s/{{name}}/$feature_name/g" -e "s/{{ name }}/$feature_name/g" "$template_file" > "$output_path"
+    echo "Created: $output_path"
+done <<< "$template_files"
 
-# Copy pages/home.ts
-page_file="$feature_dir/internal/pages/home.ts"
-sed -e "s/{{name}}/$feature_name/g" -e "s/{{ name }}/$feature_name/g" "$template_dir/{{name}}-landing/internal/pages/home.ts" > "$page_file"
-echo "Created: $page_file"
+# Add route to app.routes.ts
+echo "Adding route to app.routes.ts..."
+app_routes_file="src/app/app.routes.ts"
+
+# Construct the route entry
+# Convert feature_name to camelCase for the export name (e.g., my-feature -> myFeature)
+camel_case_name=$(echo "$feature_name" | sed -r 's/(^|-)([a-z])/\U\2/g' | sed 's/^./\l&/')
+route_export_name="${camel_case_name}FeatureRoutes"
+
+# Build the new route entry
+new_route="  {
+    path: '$feature_name',
+    loadChildren: () =>
+      import('./areas/$area/${feature_name}-landing/${feature_name}-landing/${feature_name}.routes').then((r) => r.$route_export_name),
+  },"
+
+# Find the line number of the wildcard route and insert before it
+wildcard_line=$(grep -n "path: '\*\*'" "$app_routes_file" | cut -d: -f1)
+
+if [ -z "$wildcard_line" ]; then
+    echo "Warning: Could not find wildcard route in $app_routes_file"
+    echo "Please manually add the route to app.routes.ts"
+else
+    # We need to find the opening brace of the wildcard route object
+    # Work backwards from the wildcard_line to find the nearest '{'
+    insert_line=$wildcard_line
+    while [ $insert_line -gt 1 ]; do
+        line_content=$(sed -n "${insert_line}p" "$app_routes_file")
+        if [[ "$line_content" =~ ^[[:space:]]*\{[[:space:]]*$ ]]; then
+            break
+        fi
+        insert_line=$((insert_line - 1))
+    done
+    
+    # Insert before the opening brace
+    insert_line=$((insert_line - 1))
+    
+    # Create a temporary file with the new route inserted
+    head -n "$insert_line" "$app_routes_file" > "$app_routes_file.tmp"
+    echo "$new_route" >> "$app_routes_file.tmp"
+    tail -n +$((insert_line + 1)) "$app_routes_file" >> "$app_routes_file.tmp"
+    
+    # Replace the original file
+    mv "$app_routes_file.tmp" "$app_routes_file"
+    
+    echo "Route added to $app_routes_file"
+fi
 
 echo ""
 echo "Feature '$feature_name' scaffolded successfully in $feature_dir"
