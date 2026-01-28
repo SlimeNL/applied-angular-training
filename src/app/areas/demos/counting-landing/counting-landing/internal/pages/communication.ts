@@ -13,6 +13,13 @@ import { counterStore } from '../stores/counter';
   template: `<app-ui-page title="communications">
     <div class="flex flex-row gap-4">
       <a
+        routerLink="/counting"
+        routerLinkActive="bg-yellow-200"
+        class="link"
+        [routerLinkActiveOptions]="{ exact: true }"
+        >Go Back Home!</a
+      >
+      <a
         routerLink="/counting/old-skool"
         [routerLinkActive]="['bg-yellow-200', 'uppercase']"
         class="link"
@@ -20,13 +27,6 @@ import { counterStore } from '../stores/counter';
       >
       <a routerLink="/counting/communications" routerLinkActive="bg-yellow-200" class="link"
         >Go To the communications version</a
-      >
-      <a
-        routerLink="/counting"
-        routerLinkActive="bg-yellow-200"
-        class="link"
-        [routerLinkActiveOptions]="{ exact: true }"
-        >Go Back Home!</a
       >
     </div>
     <div class="flex items-center justify-center">
@@ -44,7 +44,7 @@ import { counterStore } from '../stores/counter';
         (click)="store.increment()"
       />
 
-      <app-counting-button-reset [current]="store.current()" />
+      <app-counting-button-reset />
     </div>
   </app-ui-page>`,
   styles: ``,

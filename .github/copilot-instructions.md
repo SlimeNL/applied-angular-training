@@ -56,3 +56,4 @@ This is an Angular standalone components project organized by feature areas unde
 - Ensure tests pass (`npm run test`) before submitting changes
 - Use meaningful commit messages
 - Keep dependencies up to date
+- use the `viewChild` function instead of the `@ViewChild` decorator

@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { counterStore } from '../../stores/counter';
+import { authStore } from '@ht/shared/util-auth/store';
 
 @Component({
   selector: 'app-counting-button-reset',
@@ -18,5 +19,8 @@ import { counterStore } from '../../stores/counter';
   styles: ``,
 })
 export class ButtonReset {
-  store = inject(counterStore);
+  // we don't have to create "reusable components"
+  // This OWNS a portional application functionality
+  store = inject(counterStore); // the store is the input!
+  auth = inject(authStore);
 }

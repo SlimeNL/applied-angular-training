@@ -4,6 +4,7 @@ import { HomePage } from './internal/pages/home';
 import { OldSkoolPage } from './internal/pages/old-skool';
 import { NewSkoolPage } from './internal/pages/new-skool';
 import { CommunicationPage } from './internal/pages/communication';
+import { HostStuffPage } from './internal/pages/host-stuff';
 
 export const countingFeatureRoutes: Routes = [
   {
@@ -26,6 +27,10 @@ export const countingFeatureRoutes: Routes = [
       {
         path: 'communications',
         component: CommunicationPage,
+      },
+      {
+        path: 'host-stuff',
+        component: HostStuffPage,
       },
     ],
   },

@@ -22,5 +22,9 @@ export class Home {
       path: 'communications',
       title: 'Communications',
     },
+    {
+      path: 'host-stuff',
+      title: 'Host Stuff',
+    },
   ]);
 }

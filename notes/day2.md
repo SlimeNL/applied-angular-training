@@ -34,3 +34,18 @@
   - Effect
   - Linked Signal
 - Using In Components
+
+## Plan
+
+- Review The Lab
+- I have "Duplicate Labs"
+  - One that you could use a reference of what we did in lab 1 (this is the `/areas/labs/lab1-landing`) and another I'll keep going with now (`/areas/labs/lab1jeff/lab1-landing`)
+    - If you are going to play along, add the `lab1jeff`, with a routes in app.routes and app.ts.
+- Show my changes
+  - styles
+- Plan
+  - Naming a task.
+  - Removing a task.
+  - Editing Start time and End time?
+  - Rating Focus on that task.
+  - API Interactions
