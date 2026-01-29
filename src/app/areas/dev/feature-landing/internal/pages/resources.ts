@@ -182,6 +182,18 @@ import { PageLayout } from '@ht/shared/ui-common/layouts/page';
             <div class="space-y-4">
               <div>
                 <a
+                  href="https://www.youtube.com/watch?v=M5dxX3Dhdf4"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="link link-primary font-semibold"
+                  >Rainer Hahnekamp - NGRX Stuff</a
+                >
+                <p class="text-base-content/70 text-sm mt-1">
+                  This video and his whole channel is fantastic.
+                </p>
+              </div>
+              <div>
+                <a
                   href="https://www.youtube.com/&#64;Angular"
                   target="_blank"
                   rel="noopener noreferrer"

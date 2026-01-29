@@ -10,6 +10,7 @@ import { icons } from '@ht/shared/ui-common/icons/types';
 import { authStore } from '@ht/shared/util-auth/store';
 import { provideIcons } from '@ng-icons/core';
 import { routes } from './app.routes';
+import { tasksStore } from '@ht/shared/data/stores/tasks/store';
 export const appConfig: ApplicationConfig = {
   // are global providers for the entire application.
   // UNLESS someone somewhere adds a provider for it, then they get their own instance.
@@ -18,6 +19,7 @@ export const appConfig: ApplicationConfig = {
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes, withComponentInputBinding(), withExperimentalAutoCleanupInjectors()),
     authStore,
+    tasksStore,
     provideIcons(icons),
   ],
 };

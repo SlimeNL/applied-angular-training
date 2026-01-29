@@ -23,6 +23,10 @@ import {
   lucideCircleSlash,
   lucideX,
   lucideChessKing,
+  lucideFileCheck,
+  lucideNewspaper,
+  lucideCheckCircle,
+  lucideVoicemail,
 } from '@ng-icons/lucide';
 
 export const icons = {
@@ -50,6 +54,10 @@ export const icons = {
   lucideCircleSlash,
   lucideX,
   lucideChessKing,
+  lucideFileCheck,
+  lucideCheckCircle,
+  lucideNewspaper,
+  lucideVoicemail,
 } as const;
 
 export type IconName = keyof typeof icons;

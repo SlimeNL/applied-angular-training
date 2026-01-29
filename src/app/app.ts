@@ -4,11 +4,16 @@ import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/rou
 import { SectionLink } from '@ht/shared/ui-common/layouts/section';
 import { authStore } from '@ht/shared/util-auth/store';
 import { IconName, NgIcon } from '@ng-icons/core';
+import { Recorder } from '@ht/tasks/ui-recorder/recorder';
+import { SpeedDial } from '@ht/shared/ui-tasks/speed-dial';
+import { tasksStore } from '@ht/shared/data/stores/tasks/store';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, NgIcon],
-  template: ` <div class="drawer lg:drawer-open">
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, NgIcon, Recorder, SpeedDial],
+  template: `
+    <app-task-recorder #recorder></app-task-recorder>
+    <div class="drawer lg:drawer-open">
       <input id="my-drawer-4" type="checkbox" class="drawer-toggle" />
 
       <div class="drawer-content"><router-outlet /></div>
@@ -82,26 +87,76 @@ import { IconName, NgIcon } from '@ng-icons/core';
     <dialog #helpModal class="modal">
       <div class="modal-box">
         <h3 class="text-lg font-bold">Keyboard Shortcuts</h3>
-        <p><code>Alt + K</code> - Show this help modal</p>
-        <p><code>Alt + H</code> - Navigate to help page</p>
-        <p><code>Alt + G</code> - Go to home page</p>
+        <p>
+          <kbd class="kbd">Alt</kbd> + <kbd class="kbd">⇧</kbd> + <kbd class="kbd">Q</kbd> - Show
+          this help modal
+        </p>
+        <p>
+          <kbd class="kbd">Alt</kbd> + <kbd class="kbd">⇧</kbd> + <kbd class="kbd">H</kbd> -
+          Navigate to help page
+        </p>
+        <p>
+          <kbd class="kbd">Alt</kbd> + <kbd class="kbd">⇧</kbd> + <kbd class="kbd">G</kbd> - Go to
+          home page
+        </p>
+        <p class="pt-4 font-bold">Task Recording:</p>
+        <p>
+          <kbd class="kbd">Alt</kbd> + <kbd class="kbd">⇧</kbd> + <kbd class="kbd">R</kbd> - Start
+          recording a task
+        </p>
+        <p>
+          <kbd class="kbd">Alt</kbd> + <kbd class="kbd">⇧</kbd> + <kbd class="kbd">D</kbd> - Stop
+          recording a task
+        </p>
+        <p>
+          <kbd class="kbd">Alt</kbd> + <kbd class="kbd">⇧</kbd> + <kbd class="kbd">X</kbd> - Cancel
+          recording a task
+        </p>
         <p class="py-4">Press ESC key or click outside to close</p>
       </div>
       <form method="dialog" class="modal-backdrop">
         <button>close</button>
       </form>
-    </dialog>`,
+    </dialog>
+    <app-tasks-speed-dial />
+  `,
   styles: [],
   host: {
     tabindex: '1',
-    '(keyup.Alt.k)': 'showModal()',
-    '(keyup.Alt.h)': 'onHelpRequested()',
-    '(keyup.Alt.g)': 'goHome()',
+    '(keyup.alt.shift.q)': 'showModal()',
+    '(keyup.alt.shift.h)': 'onHelpRequested()',
+    '(keyup.alt.shift.g)': 'goHome()',
+    '(keyup.alt.shift.r)': 'recordTask()',
+    '(keyup.alt.shift.d)': 'stopRecordTask()',
+    '(keyup.alt.shift.x)': 'cancelRecordTask()',
   },
 })
 export class App {
   protected router = inject(Router);
+  store = inject(authStore);
+  taskStore = inject(tasksStore);
   helpModel = viewChild<ElementRef<HTMLDialogElement>>('helpModal');
+  recorder = viewChild<Recorder>('recorder');
+  recordTask() {
+    if (this.taskStore.isRecording()) {
+      return;
+    }
+
+    this.taskStore.startRecording();
+  }
+
+  stopRecordTask() {
+    if (!this.taskStore.isRecording()) {
+      return;
+    }
+    this.taskStore.finishRecording();
+  }
+  cancelRecordTask() {
+    if (!this.taskStore.isRecording()) {
+      return;
+    }
+    this.taskStore.cancelRecording();
+  }
   showModal() {
     this.helpModel()?.nativeElement.showModal();
   }
@@ -117,18 +172,24 @@ export class App {
   isHome() {
     return this.router.url.startsWith('/home');
   }
-  store = inject(authStore);
+
   links = signal<(SectionLink & { icon: IconName })[]>([
+    {
+      path: '/links',
+      title: 'Resources Links',
+      icon: 'lucideNewspaper',
+    },
+    {
+      path: '/tasks',
+      title: 'Task List',
+      icon: 'lucideFileCheck',
+    },
     {
       icon: 'lucideCode',
       path: '/dev',
       title: 'Dev Stuff',
     },
-    {
-      icon: 'lucideLink',
-      path: '/links',
-      title: 'Links',
-    },
+
     {
       path: '/counting',
       title: 'Counting',
@@ -141,13 +202,13 @@ export class App {
     },
 
     {
-      path: '/jefflabs',
-      title: 'Lab 1 (Jeff)',
-      icon: 'lucideChessKing',
-    },
-    {
       path: '/lab1',
       title: 'Lab 1',
+      icon: 'lucideFlaskConical',
+    },
+    {
+      path: '/books',
+      title: 'Lab 2 - Books',
       icon: 'lucideFlaskConical',
     },
   ]);

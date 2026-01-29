@@ -23,11 +23,7 @@ export const routes: Routes = [
     loadChildren: () =>
       import('./areas/dev/demos-aa-landing/demos-aa.routes').then((r) => r.demosAaFeatureRoutes),
   },
-  {
-    path: 'links',
-    loadChildren: () =>
-      import('./areas/links/feature-landing/landing.routes').then((r) => r.linksFeature),
-  },
+
   {
     path: 'counting',
     loadChildren: () =>
@@ -35,15 +31,39 @@ export const routes: Routes = [
         (r) => r.countingFeatureRoutes,
       ),
   },
-  {
-    path: 'jefflabs',
-    loadChildren: () =>
-      import('./areas/labs/lab1jeff/lab1-landing/lab1.routes').then((r) => r.lab1FeatureRoutes),
-  },
+
   {
     path: 'lab1',
     loadChildren: () =>
       import('./areas/labs/lab1/lab1-landing/lab1.routes').then((r) => r.lab1Routes),
+  },
+  {
+    path: 'tasks',
+    loadChildren: () =>
+      import('./areas/tasks/feature-list/list-landing/list.routes').then(
+        (r) => r.listFeatureRoutes,
+      ),
+  },
+  {
+    path: 'links',
+    loadChildren: () =>
+      import('./areas/resources/feature-links/links-landing/links.routes').then(
+        (r) => r.linksFeatureRoutes,
+      ),
+  },
+  {
+    path: 'breakfast',
+    loadChildren: () =>
+      import('./areas/food/feature-breakfast/breakfast-landing/breakfast.routes').then(
+        (r) => r.breakfastFeatureRoutes,
+      ),
+  },
+  {
+    path: 'books',
+    loadChildren: () =>
+      import('./areas/books/feature-list/list-landing/list.routes').then(
+        (r) => r.listFeatureRoutes,
+      ),
   },
   {
     path: '**',

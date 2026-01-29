@@ -54,7 +54,7 @@ fi
 # Set up paths
 template_dir=".templates/landing-feature"
 output_dir="src/app/areas/$area"
-feature_dir="$output_dir/${feature_name}-landing"
+feature_dir="$output_dir/feature-${feature_name}"
 
 # Check if feature directory already exists
 if [ -d "$feature_dir" ]; then
@@ -105,7 +105,7 @@ route_export_name="${camel_case_name}FeatureRoutes"
 new_route="  {
     path: '$feature_name',
     loadChildren: () =>
-      import('./areas/$area/${feature_name}-landing/${feature_name}-landing/${feature_name}.routes').then((r) => r.$route_export_name),
+      import('./areas/$area/feature-${feature_name}/${feature_name}-landing/${feature_name}.routes').then((r) => r.$route_export_name),
   },"
 
 # Find the line number of the wildcard route and insert before it
